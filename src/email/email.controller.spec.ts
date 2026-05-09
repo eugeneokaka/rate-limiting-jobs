@@ -9,11 +9,15 @@ describe('EmailController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [EmailController],
+      providers: [
+        {
+          provide: getQueueToken('email-queue'),
+          useValue: {
+            add: jest.fn(),
+          },
+        },
+      ],
     })
-      .overrideProvider(getQueueToken('email-queue'))
-      .useValue({
-        add: jest.fn(),
-      })
       .overrideGuard(RateLimitGuard)
       .useValue({
         canActivate: () => true,
