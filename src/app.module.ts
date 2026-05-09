@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { BullModule } from '@nestjs/bullmq';
 
 import { EmailModule } from './email/email.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { EmailModule } from './email/email.module';
       },
     }),
 
+    CommonModule,
     EmailModule,
   ],
 })

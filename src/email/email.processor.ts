@@ -1,15 +1,18 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
+import { Logger } from '@nestjs/common';
 
 @Processor('email-queue')
 export class EmailProcessor extends WorkerHost {
-  async process(job: Job<any>): Promise<any> {
-    console.log('Processing job:', job.name);
+  private readonly logger = new Logger(EmailProcessor.name);
 
-    console.log('Sending email to:', job.data.email);
+  async process(job: Job<any>): Promise<any> {
+    this.logger.log(`Processing job: ${job.name} with ID: ${job.id}`);
+
+    this.logger.log(`Sending email to: ${job.data.email}`);
 
     await new Promise((resolve) => setTimeout(resolve, 10000));
 
-    console.log('Email sent');
+    this.logger.log(`Email sent successfully to: ${job.data.email}`);
   }
 }
