@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EmailController } from './email.controller';
+import { getQueueToken } from '@nestjs/bullmq';
+import { RateLimitGuard } from '../common/guards/rate-limit.guard';
 
 describe('EmailController', () => {
   let controller: EmailController;
@@ -7,7 +9,16 @@ describe('EmailController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [EmailController],
-    }).compile();
+    })
+      .overrideProvider(getQueueToken('email-queue'))
+      .useValue({
+        add: jest.fn(),
+      })
+      .overrideGuard(RateLimitGuard)
+      .useValue({
+        canActivate: () => true,
+      })
+      .compile();
 
     controller = module.get<EmailController>(EmailController);
   });
